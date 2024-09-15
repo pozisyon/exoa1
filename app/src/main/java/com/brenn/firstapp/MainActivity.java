@@ -9,20 +9,17 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.digicelgroup.moncash.APIContext;
-import com.digicelgroup.moncash.exception.MonCashRestException;
-import com.digicelgroup.moncash.http.Constants;
-import com.digicelgroup.moncash.payments.Payment;
-import com.digicelgroup.moncash.payments.PaymentCreator;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpStatus;
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import entite.Personne;
@@ -56,7 +53,7 @@ ArrayList<Personne> listePersonne ;
                                               HttpURLConnection urlConnection;
                                               public void run(){
                                                   try {
-                                                  URL url = new URL("http://192.168.0.54:8080/WebSAndroid/resources/jakartaee10");
+                                                  URL url = new URL("http://192.168.0.56:8080/WSA/resources/assemblee/"+nom.getText());
 
                                                       urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -64,9 +61,14 @@ ArrayList<Personne> listePersonne ;
                                                   Log.i("apres connexion","suspens :"+url.getContent());
                                                   InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                                                   Scanner scaner = new Scanner(in);
+
+                                                  //////
+                                                 // Type listType = new TypeToken<ArrayList<Personne>>(){}.getType();
+                                                     // List<Personne> assemblee = new Gson().fromJson(scaner.nextLine(), listType);
+                                                   ////////
                                                       Personne msg =new Gson().fromJson(scaner.nextLine(), Personne.class);
                                                   //Personne msg = new Genson().deserialize(scaner.nextLine(), Personne.class);
-                                                  Log.i("exchanhe json","result: "+msg);
+                                                //  Log.i("exchanhe json","result: "+msg);
 
                                                   runOnUiThread(new Runnable() {
                                                       @Override
@@ -122,48 +124,6 @@ ArrayList<Personne> listePersonne ;
         }).start();
 
     }*/
-    public String getLien() {
-        String result = null;
-        try {
-            // Jsonb jsonb = JsonbBuilder.create();
-            APIContext apiContext = new APIContext("5838bd68e8fabe53507fa92da46b0014", "oHrr4tbnB1PH0uz6VQNUvRPZyja7WAWuVqtmgxKtXLJcjqCCldeIbPY2BpptZc76", Constants.SANDBOX);
-
-            PaymentCreator paymentCreator = new PaymentCreator();
-            Payment payment = new Payment();
-            payment.setOrderId(System.currentTimeMillis() + "");
-            payment.setAmount(50);
-            Log.i("msg","TEST AVANT PAYMENT CREATOR avant possible ERREUR");
-            PaymentCreator creator = paymentCreator.execute(apiContext, PaymentCreator.class, payment);
-            Log.i("msg"," "+"test avant possible ERREUR");
-            if (creator.getStatus() != null && creator.getStatus().compareTo(HttpStatus.SC_ACCEPTED + "") == 0) {
-                Log.i("msg"," "+"redirect to the link below");
-//creator.redirectUri() method return the payment gateway url
-                Log.i("msg","LIEN DE REDIRECTION : " + creator.redirectUri());
-                result = creator.redirectUri();
-
-                /// webDrive.get(result);
-
-                // Making thread to sleep for 2 seconds
-
-
-            } else if (creator.getStatus() == null) {
-                Log.i("msg","Error");
-               // System.out.println(creator.getError());
-                Log.i("msg"," "+creator.getError_description());
-            } else {
-                Log.i("msg","Error");
-                Log.i("msg"," "+creator.getStatus());
-                Log.i("msg"," "+creator.getError());
-                Log.i("msg"," "+creator.getMessage());
-                Log.i("msg"," "+creator.getPath());
-            }
-
-
-        } catch(MonCashRestException ex){ Log.i("msg"," "+"ERREUR*************************: "+ex.getMessage());}
-
-
-        return result;
-    }
 
 
 }
