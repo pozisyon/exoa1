@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">BRENN FORMULAIRE</string>
+    <string name="label_quest">Petit formulaire!</string>
+    <string name="message">Welcome:</string>
+    <string name="nom">Votre nom!</string>
+    <string name="prenom">Votre prenom!</string>
+    <string name="age">Votre Age!</string>
+    <string name="telephone">Votre telephone!</string>
+    <string name="email">Votre email!</string>
+    <string name="btn_valider">VALIDER</string>
+    <string name="btn_vider">EFFACER</string>
+</resources>
