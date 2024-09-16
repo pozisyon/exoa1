@@ -13,8 +13,10 @@ import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflec
 import com.google.gson.Gson;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -51,32 +53,42 @@ ArrayList<Personne> listePersonne ;
                                           Log.i("lancement thread","suspens ");
                                           new Thread(new Runnable(){
                                               HttpURLConnection urlConnection;
+                                              Personne pers = new Personne(nom.getText().toString(), prenom.getText().toString());
                                               public void run(){
                                                   try {
-                                                  URL url = new URL("http://192.168.0.56:8080/WSA/resources/assemblee/"+nom.getText());
+                                                      URL url = new URL("http://192.168.0.55:8080/WSA/resources/assemblee/ajout");
 
                                                       urlConnection = (HttpURLConnection) url.openConnection();
 
-                                                  urlConnection.setRequestMethod("GET");
-                                                  Log.i("apres connexion","suspens :"+url.getContent());
-                                                  InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                                                  Scanner scaner = new Scanner(in);
+                                                      urlConnection.setRequestMethod("PUT");
+                                                      urlConnection.setDoOutput(true);
+                                                      urlConnection.setRequestProperty("Content-type","application/json");
+                                                      String message = new Gson().toJson(pers);
+                                                      OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+                                                      out.write(message.getBytes());
+                                                      out.close();
+                                                     Log.i("apres connexion","donnee a transmettre :"+message);
+                                                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                                                      Scanner scaner = new Scanner(in);
 
-                                                  //////
-                                                 // Type listType = new TypeToken<ArrayList<Personne>>(){}.getType();
-                                                     // List<Personne> assemblee = new Gson().fromJson(scaner.nextLine(), listType);
-                                                   ////////
-                                                      Personne msg =new Gson().fromJson(scaner.nextLine(), Personne.class);
-                                                  //Personne msg = new Genson().deserialize(scaner.nextLine(), Personne.class);
-                                                //  Log.i("exchanhe json","result: "+msg);
+                                                      //////
+                                                      // Type listType = new TypeToken<ArrayList<Personne>>(){}.getType();
+                                                      // List<Personne> assemblee = new Gson().fromJson(scaner.nextLine(), listType);
+                                                      ////////
+                                                     // Personne msg =new Gson().fromJson(scaner.nextLine(), Personne.class);
+                                                      //Personne msg = new Genson().deserialize(scaner.nextLine(), Personne.class);
+                                                       //Log.i("exchange json","result: "+scaner.nextLine());
+                                                       welcome.setText("It s ok? : "+scaner.nextLine());
+                                                       in.close();
 
-                                                  runOnUiThread(new Runnable() {
-                                                      @Override
-                                                      public void run() {
-                                                          welcome.setText("Bienvenue! : "+msg.getNom()+ " "+msg.getPrenom());//+getLien());
-                                                     nom.setText(msg.getNom()); prenom.setText(msg.getPrenom());
-                                                      }
-                                                  });
+                                                      runOnUiThread(new Runnable() {
+                                                          @Override
+                                                          public void run() {
+                                                              //welcome.setText("Message Serveur? : "+scaner.nextLine());//+ " "+msg.getPrenom());//+getLien());
+                                                             nom.setText(""); prenom.setText("");
+                                                          }
+                                                      });
+
 
                                                   } catch (IOException e) {
                                                       throw new RuntimeException(e);
