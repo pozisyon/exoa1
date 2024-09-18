@@ -56,7 +56,7 @@ ArrayList<Personne> listePersonne ;
                                               Personne pers = new Personne(nom.getText().toString(), prenom.getText().toString());
                                               public void run(){
                                                   try {
-                                                      URL url = new URL("http://192.168.0.55:8080/WSA/resources/assemblee/ajout");
+                                                      URL url = new URL("http://192.168.0.54:8080/WSA/resources/assemblee/ajout");
 
                                                       urlConnection = (HttpURLConnection) url.openConnection();
 
